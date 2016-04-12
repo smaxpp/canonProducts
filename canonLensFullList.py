@@ -24,7 +24,7 @@ def main():
     df = pd.DataFrame(resultDictList)
 
     # calculate dimensions
-    df['brand'] = df.apply(lambda x: x['lensName'].split(' ')[0], axis=1)
+    df['brand'] = df.apply(lambda x: x['lensName'].strip().split(' ')[0], axis=1)
     df['price2'] = df.apply(lambda x: testConvert(x['price'].split(' ')[0].rstrip('+')) if x['price'][0] == '$' else 0.0, axis=1)
 
     print(df)
