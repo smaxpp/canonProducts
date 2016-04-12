@@ -34,3 +34,15 @@ Beautiful Soup将复杂HTML文档转换成一个复杂的树形结构,每个节�
 A `NavigableString` is just like a Python Unicode string, except that it also supports some of the features described in Navigating the tree and Searching the tree. You can convert a `NavigableString` to a Unicode string with unicode():
 
 3.0之后就没有unicode类型了, 直接用str就可以了吧
+
+## Pandas
+
+### transfer money to number
+用re模块来去掉`[$,]`, 然后转换成`float`
+
+为什么有一个镜头的brand没有获取到?
+
+因为这个镜头开头有空格, 所以所有的string的操作前先进行stripe比较好
+
+
+

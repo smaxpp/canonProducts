@@ -2,8 +2,16 @@ import requests
 from bs4 import BeautifulSoup
 from bs4 import element
 import pandas as pd
+import re
+def testConvert(s):
+    s2 = re.sub('[$,]', '', s)
+    print(s2)
+    f = float(s2)
+    print(f)
+    return f
 
 def main():
+    testConvert('$3,999')
     # get raw html and write to file
     # loadAndStoreRawHTML()
 
@@ -14,6 +22,10 @@ def main():
     resultDictList = [extractLensDataFromRow(r) for r in rows]
 
     df = pd.DataFrame(resultDictList)
+
+    # calculate dimensions
+    df['brand'] = df.apply(lambda x: x['lensName'].split(' ')[0], axis=1)
+    df['price2'] = df.apply(lambda x: testConvert(x['price'].split(' ')[0].rstrip('+')) if x['price'][0] == '$' else 0.0, axis=1)
 
     print(df)
 
