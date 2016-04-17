@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Basic Axes</title>
+    <title>Lens</title>
     <link rel="stylesheet" type="text/css" href="/public/stylesheets/style.css"/>
     <script src="/public/javascripts/d3.v3.min.js" charset="utf-8"></script>
 </head>
@@ -13,15 +13,21 @@ D3 Tutorial
 <script type="text/javascript">
 var rawdata;    
     
-data = d3.csv("copperYear.csv", function(data){
+data = d3.json("lens.json", function(data){
         render(data);
     });
 
 svg = d3.select("#chart")
-        .append("svg");
+        .append("div");
         
 function render(data) {
     rawdata = data;
+
+    svg.selectAll('div')
+        .data(rawdata)
+        .enter()
+        .append('div')
+        .text(function(d) {return d.lensName;});
 }
         
 </script>      

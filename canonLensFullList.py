@@ -42,7 +42,10 @@ def main():
 
     df.to_csv('lensList/lens.csv')
 
-
+    jsonColumnList = ['lensName', 'max', 'min', 'price2', 'type']
+    dfJson = df[jsonColumnList]
+    dfJson.columns = ['lensName', 'maxFocalLength', 'minFocalLength', 'price', 'type']
+    dfJson.to_json('public/pages/lens.json', orient='records')
 
 def extractLensDataFromRow(r1):
     columns = r1.contents
