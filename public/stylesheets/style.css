@@ -1,0 +1,30 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.Axis path {
+  display: none;
+}
+.Axis line {
+    fill: none;
+    stroke:  #808080   ;
+    opacity: 0.5;
+}
+
+.Axis .minor line {
+  stroke: #666;
+}
+
+#chart {
+  border:solid black 1px;
+}
+
+.chartTitle {
+   font-size: 40px;
+
+}

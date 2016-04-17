@@ -11,7 +11,6 @@ def testConvert(s):
     return f
 
 def main():
-    testConvert('$3,999')
     # loadAndStoreRawHTML()
 
     # create soup and analyze

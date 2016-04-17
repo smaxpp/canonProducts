@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Basic Axes</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css"/>
+    <script src="/javascripts/d3.v3.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+D3 Tutorial
+<div id="chart"></div>
+<script type="text/javascript">
+var rawdata;    
+    
+data = d3.csv("copperYear.csv", function(data){
+        render(data);
+    });
+
+svg = d3.select("#chart")
+        .append("svg");
+        
+function render(data) {
+    rawdata = data;
+}
+        
+</script>      
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Basic Axes</title>
+    <link rel="stylesheet" type="text/css" href="/public/stylesheets/style.css"/>
+    <script src="/public/javascripts/d3.v3.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+D3 Tutorial
+<div id="chart"></div>
+<script type="text/javascript">
+var rawdata;
+var yearArray=[];
+var svgWidth = 800;
+var svgHeight = 400;
+var margin = {top:svgHeight*0.2, bottom:svgHeight*0.1, left:svgWidth*0.1, right:svgWidth*0.1};
+var chartWidth = svgWidth - margin.left - margin.right;
+var chartHeight = svgHeight - margin.top - margin.bottom;
+
+data = d3.csv("copperYear.csv", function(data){
+        render(data);
+    });
+
+svg = d3.select("#chart")
+        .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight);
+        
+function render(data) {
+    rawdata = data;
+    
+
+		
+	for (var i=0;i< rawdata.length;i++) {
+		yearArray.push(rawdata[i].Year);
+	}
+		
+    dataLength = rawdata.length;
+    for (i = 0; i<rawdata.length; i++) {
+        //code
+        rawdata[i].Price = parseFloat(rawdata[i].Price);
+    }
+    
+    maxPrice = d3.max(rawdata, function(d){return d.Price;});
+    
+    // draw quantitative axis    
+    
+    yScale = d3.scale.linear()
+                .domain([0, maxPrice])
+                .range([margin.top + chartHeight, margin.top])
+    
+    yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left")
+                .ticks(5)
+				.tickSize(-chartWidth);
+        
+	svg.append("g")
+				.attr("class","Axis")
+				.attr("transform", "translate(" + margin.left + "," + 0 + ")")
+				.call(yAxis);
+				
+	var xScaleStartingPoint = chartWidth * 0.1;
+	xScale = d3.scale.ordinal()
+				.domain(yearArray)
+				.rangeRoundBands([margin.left, margin.left + chartWidth], 0.1);
+	
+	xAxis = d3.svg.axis()
+				.scale(xScale)
+				.orient("bottom");
+	
+	svg.append("g")
+				.attr("class","Axis")
+				.attr("transform", "translate(" + 0 + "," + (margin.top + chartHeight)+ ")")
+				.call(xAxis);				
+	
+				
+    bars = svg.selectAll("bars")
+                .data(rawdata)
+                .enter()
+                .append("rect")
+                .attr("x", function(d, i){return xScale(d.Year);})
+                .attr("y", function(d) {return margin.top + yScale(d.Price);})
+                .attr("height", function(d, i){return chartHeight - yScale(d.Price);})
+                .attr("fill", "teal")
+                .attr("width", xScale.rangeBand());
+				
+	texts = svg.selectAll("labels")
+				.data(rawdata)
+				.enter()
+				.append("text")
+				.attr("x", function(d, i){return xScale(d.Year) + xScale.rangeBand()/2;})
+                .attr("y", function(d) {return margin.top + yScale(d.Price) - 15;})
+				.attr("text-anchor", "middle")
+				.text(function(d){return Math.floor(d.Price);});
+	
+	var titleString = ["Copper Price Since 2012"]
+	title = svg.selectAll("chartTitle")
+				.data(titleString)
+				.enter()
+				.append("text")
+				.attr("x", margin.left)
+				.attr("y", margin.top/2)
+				.text(function(d) {return d;})
+				.attr("class", "chartTitle");
+	
+	var subTitle = "some sub title";
+		svg.append("text")
+				.text(subTitle)
+				.attr("x", margin.left)
+				.attr("y", margin.top);
+}
+        
+</script>      
+
+</body>
+</html>

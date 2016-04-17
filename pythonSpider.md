@@ -53,4 +53,10 @@ A `NavigableString` is just like a Python Unicode string, except that it also su
 对列的处理
 
 
+## D3 visualization
+
+### Python http server
+
+    python -m http.server 8080
+
 
