@@ -11,26 +11,106 @@
 D3 Tutorial
 <div id="chart"></div>
 <script type="text/javascript">
-var rawdata;    
-    
+var rawdata;
+
+var svgWidth = 800;
+var svgHeight = 1000;
+var margin = {top:30, bottom:30, left:svgWidth*0.1, right:svgWidth*0.1};
+var chartWidth = svgWidth - margin.left - margin.right;
+var chartHeight = svgHeight - margin.top - margin.bottom;
+
 data = d3.json("lens.json", function(data){
         render(data);
     });
 
 svg = d3.select("#chart")
-        .append("div");
-        
+        .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight);
+
 function render(data) {
     rawdata = data;
 
-    svg.selectAll('div')
-        .data(rawdata)
-        .enter()
-        .append('div')
-        .text(function(d) {return d.lensName;});
+    maxPrice = d3.max(rawdata, function(d){return d.price;});
+    maxAllFocalLength = d3.max(rawdata, function(d){return d.maxFocalLength;});
+
+    //draw axis
+    yScale = d3.scale.linear()
+                .domain([1, maxPrice*1.1])
+                .range([margin.top + chartHeight, margin.top]);
+
+    yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left")
+                .ticks(5)
+				        .tickSize(-chartWidth);
+
+    svg.append("g")
+  				.attr("class","Axis")
+  				.attr("transform", "translate(" + margin.left + "," + 0 + ")")
+  				.call(yAxis);
+
+    xScale = d3.scale.linear()
+              .domain([0, maxAllFocalLength*1.1])
+              .range([margin.left, margin.left + chartWidth]);
+
+    xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient("bottom")
+                .ticks(10);
+
+    svg.append("g")
+          .attr("class", "Axis")
+          .attr("transform", "translate(" + 0 + "," + (margin.top + chartHeight) + ")")
+          .call(xAxis);
+
+    // Define the div for the tooltip
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    //draw prime lensas as bubble charts
+    primeLenses = svg.selectAll("circles")
+                  .data(rawdata)
+                  .enter()
+                  .append("circle")
+                  .filter(function(d) {return d.type == 'Prime';})
+                  .attr("cx", function(d) {return xScale(d.maxFocalLength);})
+                  .attr("cy", function(d) {return yScale(d.price);})
+                  .attr("r", function(d) {return 4;})
+                  .attr("fill", "teal")
+                  .on("mouseover", function(d) {
+                      div.transition()
+                          .duration(200)
+                          .style("opacity", .9);
+                      div.html("<strong>Name:</strong> <span style='color:blue'>" + d.lensName + "</span>")
+                          .style("left", (d3.event.pageX) + "px")
+                          .style("top", (d3.event.pageY - 28) + "px");
+                      })
+                  .on("mouseout", function(d) {
+                      div.transition()
+                          .duration(500)
+                          .style("opacity", 0);
+                  });
+
+    //draw zoom lenses as bar charts with offset
+
+    zoomLenses = svg.selectAll("zoomLens")
+                  .data(rawdata)
+                  .enter()
+                  .append("rect")
+                  .filter(function(d) {return d.type == 'zoom';})
+                  .attr("x", function(d) {return xScale(d.minFocalLength);})
+                  .attr("y", function(d) {return yScale(d.price);})
+                  .attr("height", function(d) {return 1;})
+                  .attr("width", function(d) {return xScale(d.maxFocalLength - d.minFocalLength);})
+                  .attr("fill", "teal");
+
+
+
 }
-        
-</script>      
+
+</script>
 
 </body>
 </html>

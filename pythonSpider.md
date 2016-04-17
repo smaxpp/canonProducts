@@ -37,7 +37,7 @@ A `NavigableString` is just like a Python Unicode string, except that it also su
 
 ## Pandas
 
-### transfer money to number
+### Transfer money to number
 用re模块来去掉`[$,]`, 然后转换成`float`
 
     df['price2'] = df.apply(lambda x: testConvert(x['price'].split(' ')[0].rstrip('+')) if x['price'][0] == '$' else 0.0, axis=1)
@@ -54,9 +54,30 @@ A `NavigableString` is just like a Python Unicode string, except that it also su
 
 
 ## D3 visualization
+### Export data to json by pandas
+
+    dfJson.to_json('public/pages/lens.json', orient='records')
+
+`orient`可以输出成array of object
+
+### Setup environment and dependencies
+
+copy以前的d3代码
 
 ### Python http server
 
     python -m http.server 8080
 
+### Test D3
 
+    svg.selectAll('div')
+        .data(rawdata)
+        .enter()
+        .append('div')
+        .text(function d(){return d.lensName;});
+
+### Axis
+
+### Prime Lenses - Bubble chart
+
+### Zoom Lenses - Bar chart

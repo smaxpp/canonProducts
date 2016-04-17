@@ -40,11 +40,14 @@ def main():
     # print(df)
     print(df.info())
 
-    df.to_csv('lensList/lens.csv')
+    df.to_csv('lensList/lensFull.csv')
 
-    jsonColumnList = ['lensName', 'max', 'min', 'price2', 'type']
+    jsonColumnList = ['lensName','brand', 'max', 'min', 'price2', 'type']
     dfJson = df[jsonColumnList]
-    dfJson.columns = ['lensName', 'maxFocalLength', 'minFocalLength', 'price', 'type']
+    dfJson = dfJson[dfJson['brand'] == 'Canon']
+    dfJson = dfJson[dfJson['max']<=200]
+    dfJson = dfJson[dfJson['price2'] <= 2500]
+    dfJson.columns = ['lensName', 'brand', 'maxFocalLength', 'minFocalLength', 'price', 'type']
     dfJson.to_json('public/pages/lens.json', orient='records')
 
 def extractLensDataFromRow(r1):
