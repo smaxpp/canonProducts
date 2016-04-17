@@ -5,41 +5,43 @@ import pandas as pd
 import re
 def testConvert(s):
     s2 = re.sub('[$,]', '', s)
-    print(s2)
+    # print(s2)
     f = float(s2)
-    print(f)
+    # print(f)
     return f
 
 def main():
     testConvert('$3,999')
-    # get raw html and write to file
     # loadAndStoreRawHTML()
 
     # create soup and analyze
     soup = BeautifulSoup(open('lensList/canonLens.txt'), "html.parser")
     rows = soup.find_all("tr")
-
     resultDictList = [extractLensDataFromRow(r) for r in rows]
-
     df = pd.DataFrame(resultDictList)
 
-    # calculate dimensions
+    # delete header
+    df = df[1:]
+
+    # calculate brand
     df['brand'] = df.apply(lambda x: x['lensName'].strip().split(' ')[0], axis=1)
+
+    # calculate price for each lens
     df['price2'] = df.apply(lambda x: testConvert(x['price'].split(' ')[0].rstrip('+')) if x['price'][0] == '$' else 0.0, axis=1)
 
-    print(df)
+    # delete extender lens
+    df = df[~df['lensName'].str.contains('Extender')]
+
+    # calculate min & max
+    df['min'] = df['min'].apply(lambda x: float(x.split(' ')[0]))
+    df['max'] = df['max'].apply(lambda x: float(x.split(' ')[0]))
+
+    # calculate prime or zoom
+    df['type'] = df.apply(lambda x: 'Prime' if x['min']==x['max'] else 'zoom', axis=1)
+    # print(df)
+    print(df.info())
 
     df.to_csv('lensList/lens.csv')
-
-    # r = rows[206]
-    # for c in r.contents:
-    #     if(type(c)==element.Tag):
-    #         # print(c)
-    #         print(c.text)
-    #         if (len(c.contents)>1):
-    #             print(c.contents)
-    #             for content in c.contents:
-    #                 print('\t' + str(type(content)))
 
 
 

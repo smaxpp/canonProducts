@@ -40,9 +40,17 @@ A `NavigableString` is just like a Python Unicode string, except that it also su
 ### transfer money to number
 用re模块来去掉`[$,]`, 然后转换成`float`
 
+    df['price2'] = df.apply(lambda x: testConvert(x['price'].split(' ')[0].rstrip('+')) if x['price'][0] == '$' else 0.0, axis=1)
+
 为什么有一个镜头的brand没有获取到?
 
 因为这个镜头开头有空格, 所以所有的string的操作前先进行stripe比较好
+
+### 数据的清理
+
+删除不需要的行, 使用`boolean masking`就可以了
+
+对列的处理
 
 
 
